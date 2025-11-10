@@ -10,7 +10,7 @@ const translations = await getAllTranslations();
 export function useTranslations(locale: SupportedLocale) {
   return function i18n(text: string) {
     const translationEntry = translations.find(
-      (t) => t[defaultLocale] === text,
+      (t) => t[defaultLocale].trim() === text.trim(),
     );
 
     if (translationEntry === undefined) {
