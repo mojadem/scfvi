@@ -2,10 +2,24 @@
 import "@fontsource-variable/gabarito";
 import "@fontsource-variable/overpass-mono";
 import "@lib/global.css";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import {
+  removeLocaleFromUrl,
+  supportedLocales,
+  useTranslations,
+  type SupportedLocale,
+} from "@lib/i18n.ts";
+
+const locale = Astro.currentLocale! as SupportedLocale;
+const i18n = useTranslations(locale);
+
+function formatLocaleLink(locale: SupportedLocale) {
+  return getRelativeLocaleUrl(locale, removeLocaleFromUrl(Astro.url.pathname));
+}
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -15,7 +29,7 @@ import "@lib/global.css";
   </head>
   <body>
     <header>
-      <a href="/">
+      <a href={getRelativeLocaleUrl(locale, "")}>
         <svg
           viewBox="0 0 400 400"
           fill="none"
@@ -32,6 +46,18 @@ import "@lib/global.css";
     </header>
 
     <slot />
+    <footer>
+      <ul>
+        {i18n("languages")}:
+        {
+          supportedLocales.map((l) => (
+            <li>
+              <a href={formatLocaleLink(l)}>{l}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </footer>
   </body>
 </html>
 
